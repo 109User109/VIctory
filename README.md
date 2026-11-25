@@ -1,5 +1,9 @@
 # VIctory
 
+Local Windows experiments in this fork: [setup scripts](scripts/windows/README.md)
+and [test journal](docs/experiments/README.md). These notes distinguish tool setup
+from actual game execution and record the observed graphics-test failures.
+
 Runs Grand Theft Auto VI (Xbox Series X|S) natively on Windows, from files
 the user supplies.
 

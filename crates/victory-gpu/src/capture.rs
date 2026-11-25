@@ -727,6 +727,13 @@ pub(crate) fn probe(
     list: &ID3D12GraphicsCommandList,
     texture: &ID3D12Resource,
 ) -> Option<ID3D12Resource> {
+    // Performance runs can keep input scripting and frame timing without
+    // allocating a readback buffer and copying a grid on every present.
+    static DISABLED: std::sync::LazyLock<bool> =
+        std::sync::LazyLock::new(|| crate::switch::on("VICTORY_DISABLE_FRAME_PROBE"));
+    if *DISABLED {
+        return None;
+    }
     // SAFETY: a live resource.
     let d = unsafe { texture.GetDesc() };
     if !matches!(d.Format.0, 27..=29 | 87 | 90 | 91) {

@@ -2,7 +2,9 @@
 
 Este fork reúne nuestras pruebas para intentar abrir **el video de introducción y los menús de GTA VI** en una notebook con Windows y gráficos integrados. Usamos como base [VIctory, de Marvisak](https://github.com/Marvisak/VIctory), y registramos la preparación, los cambios y los resultados para poder continuar desde una revisión conocida.
 
-**Estado al 25 de noviembre de 2026:** verificamos la identidad del ejecutable y realizamos las primeras pruebas reales. VIctory reconoce la versión y abre una ventana, pero los perfiles Series S y Series X con la Radeon, y Series S por software, muestran una pantalla negra. **Todavía no logramos reproducir el video ni mostrar los menús.**
+**Estado al 25 de noviembre de 2026.** El selector de perfil y la intro con señal de audio funcionaron en la Radeon con el perfil Series X. El usuario llegó al subtítulo de Vice City. En ese tramo se agotó la memoria al crear recursos D3D12 y la escena quedó incompleta. [Resultados y pasos para repetir la prueba 01](docs/experiments/2026-11-25-prueba-01.md).
+
+Para repetirla en este equipo, abrir **Prueba-01-Original.bat**. La terminal muestra los logs en vivo. Se puede elegir un tamaño con `Prueba-01-Original.bat -Ventana 640x360` o usar una copia del guardado con `-DesdeGuardado`.
 
 ## A qué apuntamos
 
@@ -43,9 +45,9 @@ Estos datos describen nuestro equipo de prueba; no son requisitos oficiales ni u
 | Lanzador con `-CheckOnly` | Correcto |
 | Pruebas automáticas del proyecto | Siete fallos gráficos: uno en `victory-gpu` y seis en `victory-shader` |
 | Identidad del ejecutable | SHA-256 coincide con la referencia de TuxBox; BLAKE3 coincide con la versión reconocida por VIctory |
-| Arranque real: Radeon Series S / Series X y software Series S | Ventana abierta; pantalla negra en las tres pruebas |
-| Video inicial y menús del juego | No visibles en las pruebas; audio no comprobado |
-| Primera escena 3D | No probada; existe la limitación de mesh shaders |
+| Tres arranques preliminares en Radeon y WARP | Ventana abierta; pantalla negra en las tres pruebas |
+| Prueba 01 · Series X | Selector de perfil e intro visibles, señal de audio capturada |
+| Entrada al mundo | El usuario vio el subtítulo de Vice City. El registro terminó por falta de memoria |
 
 Los fallos están detallados en la [sesión de preparación](docs/experiments/2026-11-25-windows-menu.md). Todavía no determinamos si provienen del traductor, del controlador o de supuestos de las pruebas, ni si afectan al video y los menús.
 
@@ -78,10 +80,7 @@ Más detalles y controles en la [guía de los scripts](scripts/windows/README.md
 
 ## Próximos pasos
 
-1. Completar el reinicio pendiente antes de una nueva comparación del entorno.
-2. Investigar la pantalla negra: creación de texturas, vistas sin recurso y funciones de la capa de compatibilidad todavía sin implementar.
-3. Probar una corrección concreta y comprobar visualmente el video y los menús; verificar el audio por separado.
-4. Versionar cada avance junto con sus resultados, manteniendo los archivos del juego fuera del repositorio.
+Comparar la presión de memoria y las llamadas de dibujo en una copia experimental del motor. Conservar la prueba 01 como referencia de la intro y del primer intento de entrada al mundo.
 
 ## Cómo registramos el trabajo
 

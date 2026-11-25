@@ -8,6 +8,7 @@ integrados. Llegar a la primera escena 3D es un objetivo distinto.
 - [2026-11-25: presentación del fork en español](2026-11-25-readme-es.md)
 - [2026-11-25: hashes y primeras pruebas de arranque](2026-11-25-first-boot.md)
 - [2026-11-25: análisis comparado de la pantalla negra](2026-11-25-log-analysis.md)
+- [2026-11-25 · Prueba 01, intro y entrada a Vice City](2026-11-25-prueba-01.md)
 - [Scripts de compilación e inicio](../../scripts/windows/README.md)
 
 Para cada sesión nueva, agregar una entrada con fecha, revisión de código,

@@ -2,7 +2,7 @@
 
 Este fork reúne nuestras pruebas para intentar abrir **el video de introducción y los menús de GTA VI** en una notebook con Windows y gráficos integrados. Usamos como base [VIctory, de Marvisak](https://github.com/Marvisak/VIctory), y registramos la preparación, los cambios y los resultados para poder continuar desde una revisión conocida.
 
-**Estado al 25 de noviembre de 2026:** el entorno está instalado, el port está compilado y el lanzador funciona. Todavía no ejecutamos el juego en este equipo, así que el video y los menús siguen pendientes de comprobación.
+**Estado al 25 de noviembre de 2026:** verificamos la identidad del ejecutable y realizamos las primeras pruebas reales. VIctory reconoce la versión y abre una ventana, pero los perfiles Series S y Series X con la Radeon, y Series S por software, muestran una pantalla negra. **Todavía no logramos reproducir el video ni mostrar los menús.**
 
 ## A qué apuntamos
 
@@ -42,10 +42,14 @@ Estos datos describen nuestro equipo de prueba; no son requisitos oficiales ni u
 | Arranque de la herramienta y lectura de configuración | Correctos |
 | Lanzador con `-CheckOnly` | Correcto |
 | Pruebas automáticas del proyecto | Siete fallos gráficos: uno en `victory-gpu` y seis en `victory-shader` |
-| Video inicial, audio y menús del juego | Pendientes de probar con los archivos del juego |
+| Identidad del ejecutable | SHA-256 coincide con la referencia de TuxBox; BLAKE3 coincide con la versión reconocida por VIctory |
+| Arranque real: Radeon Series S / Series X y software Series S | Ventana abierta; pantalla negra en las tres pruebas |
+| Video inicial y menús del juego | No visibles en las pruebas; audio no comprobado |
 | Primera escena 3D | No probada; existe la limitación de mesh shaders |
 
 Los fallos están detallados en la [sesión de preparación](docs/experiments/2026-11-25-windows-menu.md). Todavía no determinamos si provienen del traductor, del controlador o de supuestos de las pruebas, ni si afectan al video y los menús.
+
+La [sesión de primer arranque](docs/experiments/2026-11-25-first-boot.md) registra las referencias de hashes, los comandos y el resultado de cada perfil. Son referencias de los proyectos comunitarios, no una certificación de Rockstar ni una validación integral de los recursos. Los contadores de fotogramas y llamadas de dibujo avanzan, pero no demuestran que se esté reproduciendo el video.
 
 El instalador de Microsoft solicitó reiniciar Windows al finalizar. La sesión de preparación no confirmó ese reinicio.
 
@@ -74,10 +78,10 @@ Más detalles y controles en la [guía de los scripts](scripts/windows/README.md
 
 ## Próximos pasos
 
-1. Completar el reinicio pendiente y comprobar que el ejecutable y los recursos correspondan a la misma versión.
-2. Probar el arranque, el video con audio y la navegación por los menús.
-3. Registrar el primer fallo reproducible, los tiempos y el comportamiento observado.
-4. Evaluar los cambios necesarios y versionar cada avance junto con sus resultados.
+1. Completar el reinicio pendiente antes de una nueva comparación del entorno.
+2. Investigar la pantalla negra: creación de texturas, vistas sin recurso y funciones de la capa de compatibilidad todavía sin implementar.
+3. Probar una corrección concreta y comprobar visualmente el video y los menús; verificar el audio por separado.
+4. Versionar cada avance junto con sus resultados, manteniendo los archivos del juego fuera del repositorio.
 
 ## Cómo registramos el trabajo
 

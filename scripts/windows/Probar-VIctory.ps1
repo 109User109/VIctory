@@ -6,6 +6,7 @@ param(
     [switch]$DesdeGuardado,
     [switch]$Manual,
     [switch]$SerieS,
+    [ValidatePattern('^[0-9]{1,3}(,[0-9]{1,3})*$')][string]$ConfirmarEn,
     [switch]$CheckOnly
 )
 $ErrorActionPreference = 'Stop'
@@ -15,16 +16,25 @@ $root = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..'))
 $dataRoot = Join-Path (Split-Path $root -Parent) ((Split-Path $root -Leaf) + '-datos')
 $original = $Variante -eq 'Original'
 if ($SerieS -and $original) { throw 'La prueba original requiere Series X.' }
+if ($ConfirmarEn -and $Manual) { throw 'Elige entrada manual o confirmaciones programadas.' }
 $profile = if ($SerieS) { 'series-s' } else { 'series-x' }
 if (!$Ventana) { $Ventana = if ($original) { '960x540' } else { '800x450' } }
 $name = if ($original) { '01-original' } elseif ($SerieS) { '02-memoria' } else { '02-memoria-x' }
 $homeTest = Join-Path $dataRoot "pruebas\$name"
 $binary = Join-Path $root 'target\diag\victory.exe'
 $frozen = Join-Path $homeTest 'bin\victory.exe'
-if ($original -and (Test-Path -LiteralPath $frozen)) {
+if ($original -and !(Test-Path -LiteralPath $frozen)) {
+    throw 'Usa el BAT de la copia original o instala su binario congelado para ejecutar la prueba 01.'
+}
+if (Test-Path -LiteralPath $frozen -PathType Leaf) {
     $binary = $frozen
-    if ((Get-FileHash -LiteralPath $binary).Hash -ne '128364546DAE4F156600B8075A358495494FD33D041B2B279F0153C9E8F17384') {
-        throw 'La copia congelada de la prueba 01 cambio. Verifica su SHA-256.'
+    $expected = if ($original) {
+        '128364546DAE4F156600B8075A358495494FD33D041B2B279F0153C9E8F17384'
+    } else {
+        '325B494598E3D2C64EDFD814C5DF47177E1628CCCCB3179002D538103152D387'
+    }
+    if ((Get-FileHash -LiteralPath $binary).Hash -ne $expected) {
+        throw "La copia congelada de $name cambio. Verifica su SHA-256."
     }
 }
 if (!(Test-Path -LiteralPath $binary -PathType Leaf)) { throw 'Falta compilar el port. Ejecuta scripts\windows\Compilar-VIctory.ps1.' }
@@ -67,10 +77,21 @@ if ($original) {
     $env:VICTORY_CACHE_DIR = Join-Path $homeTest 'cache'
     $env:VICTORY_DISABLE_FRAME_PROBE = '1'
 }
-if (!$Manual -and !$DesdeGuardado) {
-    $env:VICTORY_KEYS = '43:Enter'
-    Write-Host 'Se enviara un solo Enter a los 43 s desde el inicio de la entrada.'
+if (!$ConfirmarEn -and !$Manual -and !$DesdeGuardado) { $ConfirmarEn = '43' }
+if ($ConfirmarEn) {
+    $env:VICTORY_KEYS = (($ConfirmarEn -split ',' | ForEach-Object { $_ + ':Enter' }) -join ',')
+    Write-Host "Enter programado (segundos desde el inicio de la entrada): $ConfirmarEn"
 }
+$summary = Join-Path $session 'sesion.txt'
+@(
+    "Inicio: $([DateTimeOffset]::Now.ToString('o'))"
+    "Prueba: $name"
+    "Perfil: $profile"
+    "Ventana: $Ventana"
+    "Datos desde la copia del guardado: $([bool]$DesdeGuardado)"
+    "Teclas programadas: $env:VICTORY_KEYS"
+    "SHA-256 de VIctory: $((Get-FileHash -LiteralPath $binary).Hash)"
+) | Set-Content -LiteralPath $summary -Encoding UTF8
 Write-Host "Registros: $session"
 Write-Host 'En el selector de perfil, Enter = A. Cierra la ventana del juego con Alt+F4.'
 $out = Join-Path $session 'stdout.txt'
@@ -97,6 +118,7 @@ try {
     } while (!$finished)
     $process.WaitForExit()
     $code = $process.ExitCode
+    "Fin: $([DateTimeOffset]::Now.ToString('o')) | Salida: $code" | Add-Content -LiteralPath $summary -Encoding UTF8
     Write-Host "Salida: $code | Registros: $session"
     exit $code
 } finally {

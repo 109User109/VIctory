@@ -5,6 +5,7 @@ video de arranque y navegar los menús de GTA VI en Windows con gráficos
 integrados. Llegar a la primera escena 3D es un objetivo distinto.
 
 - [2026-11-25: preparación inicial en Ryzen 5 7530U](2026-11-25-windows-menu.md)
+- [2026-11-25: presentación del fork en español](2026-11-25-readme-es.md)
 - [Scripts de compilación e inicio](../../scripts/windows/README.md)
 
 Para cada sesión nueva, agregar una entrada con fecha, revisión de código,

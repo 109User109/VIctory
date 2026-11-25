@@ -77,10 +77,11 @@ al lanzador (`VICTORY_CONFIG`, `VICTORY_CACHE_DIR`, `VICTORY_DATA_DIR`,
   la causa del negro.
 - En Series S, tanto Radeon como WARP rechazan además la creación de una
   textura 1920×1080, formato 67, flags 5, con `0x80070057`.
-- Se registran vistas sin recurso, métodos de dispositivo sin implementar
-  y el rechazo de una carga dinámica de la biblioteca del escalador por la
-  política de DLL del port. Son candidatos para investigar, sin causalidad
-  confirmada en esta sesión.
+- Se registran vistas sin recurso y métodos de dispositivo sin implementar.
+  También aparece un aviso de rechazo para la biblioteca del escalador,
+  seguido de su carga y enlace correctos. La revisión posterior del
+  [análisis de logs](2026-11-25-log-analysis.md) corrige la interpretación
+  inicial: el aviso no demuestra que la carga dinámica haya fallado.
 - WARP fue confirmado por el registro del adaptador. Al cambiar de adaptador
   se recreó una biblioteca de pipelines incompatible con el anterior.
   El negro también por software impide atribuirlo exclusivamente a la Radeon.
